@@ -78,6 +78,15 @@ RUN mkdir -p /tmp/bm ; \
     make install ; ldconfig ; \
     rm -rf /tmp/bm
 
+# install PTF
+RUN mkdir -p /tmp/ptf ; \
+	cd /tmp/ptf ; \
+	pip install pypcap ; \
+        git clone https://github.com/p4lang/ptf ; \
+        cd ptf ; \
+        python setup.py install ; \
+	rm -rf /tmp/ptf
+
 # install p4c-bm
 RUN mkdir /tmp/p4c-bm ; \
     cd /tmp/p4c-bm ; \
@@ -104,10 +113,27 @@ RUN mkdir /tmp/p4ofagent ; \
     make install CPPFLAGS=-D_BMV2_ ; \
     rm -rf /tmp/p4ofagent
 
+RUN pip install tenjin
+
+RUN echo "set nu" >> /root/.vimrc
+RUN echo "set hlsearch" >> /root/.vimrc
+RUN echo "set et" >> /root/.vimrc
+RUN echo "set tabstop=2" >> /root/.vimrc
+RUN echo "set shiftwidth=2" >> /root/.vimrc
+RUN echo "set autoindent" >> /root/.vimrc
+RUN echo "set smartindent" >> /root/.vimrc
+
 # build switch
 RUN git clone https://github.com/p4lang/switch ; \
     cd switch ; \
     git submodule update --init --recursive ; \
+    sed -i 's/ctypesgen.py/ctypesgen/g' configure.ac ; \
     ./autogen.sh ; \
-    ./configure --with-bmv2 --with-of ; \
+    ./configure --with-bmv2 --with-switchsai --with-of ; \
     make
+
+RUN apt install -y tmux tcpdump
+RUN mv /usr/sbin/tcpdump /usr/bin/tcpdump
+RUN pip install crc16
+
+RUN git clone https://github.com/floodlight/oftest
