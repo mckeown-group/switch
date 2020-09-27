@@ -122,6 +122,13 @@ This will build the docker image "p4dockerswitch".
     p4dockerswitch      latest              8835deb7979e        2 days ago      1.482 GB
     ubuntu              14.04               1e0c3dd64ccd        5 weeks ago     187.9 MB
 
+Running the switch docker images
+--------------------------------------
+
+    docker run --rm -it --privileged --entrypoint /bin/bash sundararajan20/pronto:p4dockerswitch
+
+After entering the container, run the PTF test commands from above.
+
 Running switch ntf-tests
 --------------------------------------
 
